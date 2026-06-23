@@ -60,7 +60,7 @@ public class CategoriesController
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable Integer categoryId)
     {
-        List<Product> product = productService.getProductsByCategoryId(categoryId);
+        List<Product> product = productService.getAllProducts();
         if (categoryId == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

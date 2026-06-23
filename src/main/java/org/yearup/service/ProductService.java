@@ -1,7 +1,6 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
-import org.yearup.models.Category;
 import org.yearup.models.Product;
 import org.yearup.repository.ProductRepository;
 
@@ -17,18 +16,14 @@ public class ProductService
         this.productRepository = productRepository;
     }
 
-    public List<Product> search(Integer categoryId, Double minPrice, Double maxPrice, String subCategory)
-    {
-        List<Product> products = categoryId != null
-                ? productRepository.findByCategoryId(categoryId)
-                : productRepository.findAll();
+    public List<Product> search(Integer categoryId, Double minPrice, Double maxPrice, String subCategory) {
+        List<Product> products = categoryId != null ? productRepository.findByCategoryId(categoryId) : productRepository.findAll();
 
         return products.stream()
                        .filter(p -> minPrice == null || p.getPrice() >= minPrice)
                        .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
                        .filter(p -> subCategory == null || subCategory.equalsIgnoreCase(p.getSubCategory()))
-                       .filter(Product::isFeatured)
-                       .toList();
+                        .toList();
     }
 
     public Product getById(Integer productId)
@@ -36,8 +31,8 @@ public class ProductService
         return productRepository.findById(productId).orElse(null);
     }
 
-    public List<Product> getProductsByCategoryId(Integer categoryId){
-        return productRepository.findByCategoryId(categoryId);
+    public List<Product> getAllProducts(){
+        return productRepository.findAll();
     }
 
     public Product create(Product product)

@@ -669,7 +669,7 @@ paths:
     get:
       tags: [Categories]
       summary: Get products in a category (@todo)
-      description: Returns all products belonging to the given category. @todo - CategoriesController.getProductsByCategoryId() stub exists but is not implemented.
+      description: Returns all products belonging to the given category. @todo - CategoriesController.getAllProducts() stub exists but is not implemented.
       operationId: getProductsByCategory
       security: []
       parameters:
