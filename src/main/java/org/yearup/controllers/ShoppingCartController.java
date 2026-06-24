@@ -32,10 +32,7 @@ public class ShoppingCartController {
     @PreAuthorize("isAuthenticated()")
     public ShoppingCart getCart(Principal principal) {
         // get the currently logged in username
-        String userName = principal.getName();
-        // find database user by username
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        int userId = shoppingCartService.getUserId(principal);
 
         // use the shoppingCartService to get all items in the cart and return the cart
         return shoppingCartService.getByUserId(userId);
@@ -48,11 +45,10 @@ public class ShoppingCartController {
     @PostMapping("/products/{productId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ShoppingCart> addItem(@PathVariable int productId, Principal principal){
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        int userId = shoppingCartService.getUserId(principal);
 
         ShoppingCart updatedCart = shoppingCartService.addItem(productId, userId);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedCart);
     }
 
@@ -64,11 +60,7 @@ public class ShoppingCartController {
     @PutMapping(value = "/products/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ShoppingCart> updateShoppingCart(Principal principal, @PathVariable int productId, @RequestBody ShoppingCartItem item){
-        System.out.println("Request body quantity: " + item.getQuantity());
-        System.out.println("Request body item : " + item.getProduct());
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        int userId = shoppingCartService.getUserId(principal);
 
         ShoppingCart updatedItems = shoppingCartService.updateItem(userId, productId, item);
 
@@ -81,11 +73,7 @@ public class ShoppingCartController {
     @DeleteMapping()
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ShoppingCart> clearCart(Principal principal){
-        System.out.println("delete endpoint reached");
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
-
+        int userId = shoppingCartService.getUserId(principal);
 
         return ResponseEntity.ok(shoppingCartService.clearCart(userId));
     }

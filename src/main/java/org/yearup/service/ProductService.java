@@ -26,8 +26,7 @@ public class ProductService
                         .toList();
     }
 
-    public Product getById(Integer productId)
-    {
+    public Product getById(Integer productId) {
         return productRepository.findById(productId).orElse(null);
     }
 
@@ -35,13 +34,11 @@ public class ProductService
         return productRepository.findAll();
     }
 
-    public Product create(Product product)
-    {
+    public Product create(Product product) {
         return productRepository.save(product);
     }
 
-    public Product update(int productId, Product product)
-    {
+    public Product update(int productId, Product product) {
         Product existing = productRepository.findById(productId).orElseThrow();
         existing.setName(product.getName());
         existing.setPrice(product.getPrice());

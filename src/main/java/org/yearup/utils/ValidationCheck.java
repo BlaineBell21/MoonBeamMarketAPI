@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.yearup.models.CartItem;
 import org.yearup.models.Product;
+import org.yearup.models.Profile;
 
 public class ValidationCheck {
     public static void productValidation(Product product){
@@ -20,6 +21,14 @@ public class ValidationCheck {
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Illegal item quantity.\n" +
                             "Inputted item quantity must be greater than 0 and less than maximum stock amount.");
+        }
+    }
+
+    public static void userValidation(Profile profile){
+        if (profile == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Profile not found.\n" +
+                            "This user either doesn't exist or the incorrect ID was inputted.");
         }
     }
 }

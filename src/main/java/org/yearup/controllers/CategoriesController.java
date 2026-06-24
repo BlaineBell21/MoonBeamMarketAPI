@@ -34,8 +34,7 @@ public class CategoriesController
 
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<Category>> getAll()
-    {
+    public ResponseEntity<List<Category>> getAll() {
         List<Category> categories = categoryService.getAllCategories();
            return ResponseEntity.ok(categories);
     }

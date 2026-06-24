@@ -6,6 +6,7 @@ import org.yearup.models.*;
 import org.yearup.repository.ShoppingCartRepository;
 import org.yearup.utils.ValidationCheck;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -14,10 +15,12 @@ public class ShoppingCartService
     // a shopping cart is built from cart rows plus a product lookup for each row
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductService productService;
+    private final UserService userService;
 
-    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService) {
+    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService, UserService userService) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productService = productService;
+        this.userService = userService;
     }
 
     public ShoppingCart getByUserId(int userId) {
@@ -36,6 +39,12 @@ public class ShoppingCartService
            cart.add(item);
         }
         return cart;
+    }
+
+    public int getUserId(Principal principal){
+        String userName = principal.getName();
+        User user = userService.getByUserName(userName);
+        return user.getId();
     }
 
     public ShoppingCart addItem(int productId, int userId){
