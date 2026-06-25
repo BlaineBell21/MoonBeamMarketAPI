@@ -70,9 +70,7 @@ public class ShoppingCartService
     }
 
     public ShoppingCart updateItem(int userId, int productId, ShoppingCartItem item){
-        System.out.println("Incoming quantity: " + item.getQuantity());
         Product product = productService.getById(productId);
-        System.out.println("Request item found : " + product.getName());
         ValidationCheck.productValidation(product); // Checks if product exists
 
        CartItem existingCartItem = shoppingCartRepository.findByUserIdAndProductId(userId, productId);

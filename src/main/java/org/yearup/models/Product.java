@@ -2,6 +2,8 @@ package org.yearup.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "products")
 public class Product
@@ -15,7 +17,7 @@ public class Product
     private String name;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "category_id")
     private int categoryId;
@@ -39,7 +41,7 @@ public class Product
     {
     }
 
-    public Product(int productId, String name, double price, int categoryId, String description, String subCategory, int stock, boolean isFeatured, String imageUrl)
+    public Product(int productId, String name, BigDecimal price, int categoryId, String description, String subCategory, int stock, boolean isFeatured, String imageUrl)
     {
         this.productId = productId;
         this.name = name;
@@ -72,12 +74,12 @@ public class Product
         this.name = name;
     }
 
-    public double getPrice()
+    public BigDecimal getPrice()
     {
         return price;
     }
 
-    public void setPrice(double price)
+    public void setPrice(BigDecimal price)
     {
         this.price = price;
     }
