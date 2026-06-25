@@ -16,9 +16,11 @@ public class ProductService {
     }
 
     public List<Product> search(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String subCategory) {
+        // search method that allows user to search through any available filter categories
         List<Product> products = categoryId != null ? productRepository.findByCategoryId(categoryId) : productRepository.findAll();
 
         return products.stream()
+                // checks whether properties are null and filters products
                        .filter(p -> minPrice == null || p.getPrice().compareTo(minPrice) >= 0)
                        .filter(p -> maxPrice == null || p.getPrice().compareTo(maxPrice) <= 0)
                        .filter(p -> subCategory == null || subCategory.equalsIgnoreCase(p.getSubCategory()))
@@ -38,6 +40,9 @@ public class ProductService {
     }
 
     public Product update(int productId, Product product) {
+        // updates a product's values
+
+        // checks if product exists before attempting to update
         Product existing = productRepository.findById(productId).orElseThrow();
         existing.setName(product.getName());
         existing.setPrice(product.getPrice());
@@ -47,6 +52,8 @@ public class ProductService {
         existing.setStock(product.getStock());
         existing.setFeatured(product.isFeatured());
         existing.setImageUrl(product.getImageUrl());
+
+        // saves updated product to data base
         return productRepository.save(existing);
     }
 

@@ -34,18 +34,20 @@ public class CategoriesController
 
     @GetMapping
     @PreAuthorize("permitAll()")
+    // allows any user to see all product categories
     public ResponseEntity<List<Category>> getAll() {
         List<Category> categories = categoryService.getAllCategories();
            return ResponseEntity.ok(categories);
     }
 
-    // add the appropriate annotation for a get action
-    // https://localhost:8080/categories/1
+
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
+    // allows any user to view a specific product category
     public ResponseEntity<Category> getByCategoryId(@PathVariable Integer id){
         Category category = categoryService.getByCategoryId(id);
 
+        // checks if category exists
         if (categoryService.getByCategoryId(id) == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -53,23 +55,22 @@ public class CategoriesController
         return ResponseEntity.ok(category);
     }
 
-    // the url to return all products in category 1 would look like this
-    // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
     @PreAuthorize("permitAll()")
+    // allows any user to products based on product category
     public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable Integer categoryId)
     {
         List<Product> product = productService.getAllProducts();
+        // checks if category exists
         if (categoryId == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return  ResponseEntity.ok(product);
     }
 
-    // add annotation to call this method for a POST action
-    // add annotation to ensure that only an ADMIN can call this function
     @PostMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // allows only admin to add new categories
     public ResponseEntity<Category> addCategory(@RequestBody Category category)
     {
         Category saved = categoryService.createCategory(category);
@@ -77,10 +78,9 @@ public class CategoriesController
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // allows only admin to update a category
     public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category)
     {
         Category updated = categoryService.update(id, category);
@@ -89,12 +89,11 @@ public class CategoriesController
     }
 
 
-    // add annotation to call this method for a DELETE action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Integer id)
-    {
+    // allows only admin to delete a category
+    public ResponseEntity<Void> deleteCategory(@PathVariable Integer id) {
+        // checks if category exists before deleting
         if(categoryService.getByCategoryId(id) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

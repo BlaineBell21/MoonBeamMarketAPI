@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.yearup.models.Product;
 import org.yearup.service.ProductService;
+import org.yearup.utils.ValidationCheck;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,6 +25,7 @@ public class ProductsController
 
     @GetMapping
     @PreAuthorize("permitAll()")
+    // allows any user to use search features
     public List<Product> allProducts(@RequestParam(name="cat", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
                                 @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
@@ -32,13 +34,14 @@ public class ProductsController
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/{productId}")
     @PreAuthorize("permitAll()")
-    public Product getById(@PathVariable int id) {
-        Product product = productService.getById(id);
+    // allows any user to get information of a specific product
+    public Product getById(@PathVariable int productId) {
+        Product product = productService.getById(productId);
 
-        if (product == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        // checks if product exists before attempting to retrieve it
+       ValidationCheck.productValidation(product);
 
         return product;
     }
@@ -46,28 +49,33 @@ public class ProductsController
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // allows only admin to add new products
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         Product saved = productService.create(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Product updateProduct(@PathVariable int id, @RequestBody Product product) {
-        if (productService.getById(id) == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return productService.update(id, product);
+    // allows only admin to update products
+    public Product updateProduct(@PathVariable int productId, @RequestBody Product product) {
+        // checks if product exists before attempting to update it
+        ValidationCheck.productValidation(product);
+
+        return productService.update(productId, product);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{productId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
-        Product product = productService.getById(id);
+    // allows only admin to delete product
+    public ResponseEntity<Void> deleteProduct(@PathVariable int productId) {
+        Product product = productService.getById(productId);
 
-        if (product == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        productService.delete(id);
+        // checks if product exists before trying to delete
+        ValidationCheck.productValidation(product);
+
+        productService.delete(productId);
+
         return ResponseEntity.ok().build();
     }
 }

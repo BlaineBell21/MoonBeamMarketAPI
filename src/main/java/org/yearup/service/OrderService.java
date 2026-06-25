@@ -28,6 +28,7 @@ public class OrderService {
     }
 
     public BigDecimal calculateTotal(List<OrderItem> itemList){
+        // calculates order total including shipping
         BigDecimal total = BigDecimal.ZERO;
         BigDecimal shippingAmount = new BigDecimal("5.99");
 
@@ -43,12 +44,15 @@ public class OrderService {
     }
 
     public List<OrderItem> getCartItems(int userId){
+        // gets all items in cart and converts them into an OrderItem object
         ShoppingCart cart = shoppingCartService.getByUserId(userId);
 
         List<OrderItem> orderItems = new ArrayList<>();
 
         for(ShoppingCartItem item : cart.getItems().values()){
+
             OrderItem orderItem = new OrderItem();
+
             orderItem.setProductId(item.getProductId());
             orderItem.setProductName(item.getProduct().getName());
             orderItem.setQuantity(item.getQuantity());
@@ -70,10 +74,12 @@ public class OrderService {
 
     @Transactional
     public Order checkout(Principal principal){
+        // finalizes user's order
         int userId = getUserId(principal);
 
         List<OrderItem> orderItems = getCartItems(userId);
 
+        // checks if order is empty to keep user from checking out an empty cart
         if (orderItems.isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Cannot checkout an empty orderItems");
@@ -94,7 +100,7 @@ public class OrderService {
         Order newOrder = new Order();
 
 
-
+        // sets newOrder to information of current order
         newOrder.setUserId(userId);
         newOrder.setOrderDate(DateUtils.currentDateAndTime());
         newOrder.setItems(orderItems);
@@ -109,10 +115,16 @@ public class OrderService {
             item.setOrder(newOrder);
         }
 
+        // saves order to repository
         orderRepository.save(newOrder);
+
+        // takes order information to receipt service to create a receipt
         receiptService.saveReceipt(newOrder);
 
+        // clears user's cart after order is finished
         shoppingCartService.clearCart(userId);
+
+        // returns an empty cart
         return newOrder;
     }
 }

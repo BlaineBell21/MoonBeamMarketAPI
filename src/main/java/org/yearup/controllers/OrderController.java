@@ -22,8 +22,8 @@ public class OrderController {
 
     @PostMapping()
     @PreAuthorize("isAuthenticated()")
+    // allows only logged in users to finalize an order
     public ResponseEntity<Order> finishOrder(Principal principal){
-        int userId = orderService.getUserId(principal);
 
         Order checkoutOrder = orderService.checkout(principal);
 

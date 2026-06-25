@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("profile")
+@CrossOrigin
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -24,8 +25,10 @@ public class ProfileController {
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Profile> getProfile(Principal principal){
+        // retrieves a user's profile
         Profile userProfile = profileService.getProfileById(principal);
 
+        // checks if user exists before returning response
         ValidationCheck.userValidation(userProfile);
 
         return ResponseEntity.ok(userProfile);
