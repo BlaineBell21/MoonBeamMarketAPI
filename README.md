@@ -101,8 +101,6 @@ During checkout, the service coordinates several independent parts of the applic
 
 This service demonstrates the responsibility of the service layer in a layered Spring Boot application. Rather than simply performing CRUD operations, it encapsulates the application's business rules by validating the cart, transforming data between models, calculating totals, persisting related entities, and maintaining transactional integrity.
 
-There are definitely still some changes/improvements I'd like to make to this method in the future. Currently, it handles validating the cart, creating the order, getting the total, and clearing the cart, and it'd be cleaner to separate all these functions into smaller methods.
-
 ```java
 @Transactional
 public Order checkout(Principal principal){
@@ -162,7 +160,8 @@ public Order checkout(Principal principal){
 }
 ```
 
-I chose this example because it demonstrates several concepts working together rather than a single isolated feature. It highlights service-layer design, entity relationships, transactional operations, object transformation, and financial calculations using `BigDecimal`, making it one of the core pieces of business logic in the application.
+I chose this example because it demonstrates several concepts working together rather than a single isolated feature. It highlights service-layer design, entity relationships, transactional operations, object transformation, and financial calculations using `BigDecimal`, making it one of the core pieces of business logic in the application. There are definitely still some changes/improvements I'd like to make to this method in the future though. It currently handles a lot of different functionality that could be separated into their own methods, which would make the code much cleaner and expandable.
+
 
 
 # 🛠 Tech Stack
