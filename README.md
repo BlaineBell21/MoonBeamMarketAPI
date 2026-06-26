@@ -229,6 +229,8 @@ Repository Layer
 MySQL Database
 ```
 
+![](images/diagram.png)
+
 ---
 
 # 🔐 Authentication
