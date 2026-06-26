@@ -18,6 +18,7 @@ public class ReceiptService {
 
     @Transactional
     public String generateReceipt(Order order){
+        // used to generate receipt that gets written by the CSV writer
         StringBuilder receipt = new StringBuilder();
 
         BigDecimal subtotal = BigDecimal.ZERO;

@@ -13,10 +13,6 @@ import org.yearup.service.ProductService;
 
 import java.util.List;
 
-// add the annotations to make this a REST controller
-// add the annotation to make this controller the endpoint for the following url
-    // http://localhost:8080/categories
-// add annotation to allow cross site origin requests
 
 @RestController
 @RequestMapping("categories")
@@ -46,11 +42,9 @@ public class CategoriesController
     // allows any user to view a specific product category
     public ResponseEntity<Category> getByCategoryId(@PathVariable Integer id){
         Category category = categoryService.getByCategoryId(id);
-
+        int cat = category.getCategoryId();
         // checks if category exists
-        if (categoryService.getByCategoryId(id) == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        categoryValidation(cat);
 
         return ResponseEntity.ok(category);
     }
@@ -58,21 +52,21 @@ public class CategoriesController
     @GetMapping("{categoryId}/products")
     @PreAuthorize("permitAll()")
     // allows any user to products based on product category
-    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable Integer categoryId)
-    {
+    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable Integer categoryId) {
         List<Product> product = productService.getAllProducts();
         // checks if category exists
-        if (categoryId == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        Category category = categoryService.getByCategoryId(categoryId);
+        int cat = category.getCategoryId();
+        // checks if category exists
+        categoryValidation(cat);
+
         return  ResponseEntity.ok(product);
     }
 
     @PostMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     // allows only admin to add new categories
-    public ResponseEntity<Category> addCategory(@RequestBody Category category)
-    {
+    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
         Category saved = categoryService.createCategory(category);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
@@ -81,8 +75,11 @@ public class CategoriesController
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     // allows only admin to update a category
-    public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category)
-    {
+    public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category) {
+        int cat = category.getCategoryId();
+        // checks if category exists
+        categoryValidation(cat);
+
         Category updated = categoryService.update(id, category);
 
         return ResponseEntity.ok(updated);
@@ -93,12 +90,20 @@ public class CategoriesController
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     // allows only admin to delete a category
     public ResponseEntity<Void> deleteCategory(@PathVariable Integer id) {
-        // checks if category exists before deleting
-        if(categoryService.getByCategoryId(id) == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        Category category = categoryService.getByCategoryId(id);
+        int cat = category.getCategoryId();
+        // checks if cat exists
+        categoryValidation(cat);
 
        categoryService.delete(id);
        return ResponseEntity.noContent().build();
+    }
+
+    public static void categoryValidation(Integer categoryId){
+        if (categoryId == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Category not found.\n" +
+                            "This category either isn't available or the category Id was entered in incorrectly.");
+        }
     }
 }

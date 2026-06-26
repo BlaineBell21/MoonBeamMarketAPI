@@ -12,8 +12,7 @@ import org.yearup.service.ShoppingCartService;
 
 import java.security.Principal;
 
-// convert this class to a REST controller
-// only logged in users should have access to these actions
+
 @RestController
 @RequestMapping("cart")
 @CrossOrigin
@@ -37,9 +36,6 @@ public class ShoppingCartController {
         return shoppingCartService.getByUserId(userId);
     }
 
-    // add a POST method to add a product to the cart - the url should be
-    // https://localhost:8080/cart/products/15  (15 is the productId to be added)
-    // return the updated cart with status 201 Created
 
     @PostMapping("/products/{productId}")
     @PreAuthorize("isAuthenticated()")
@@ -51,11 +47,6 @@ public class ShoppingCartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedCart);
     }
 
-
-
-    // add a PUT method to update an existing product in the cart - the url should be
-    // https://localhost:8080/cart/products/15  (15 is the productId to be updated)
-    // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated; return the cart (200 OK)
     @PutMapping(value = "/products/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ShoppingCart> updateShoppingCart(Principal principal, @PathVariable int productId, @RequestBody ShoppingCartItem item){
@@ -66,9 +57,6 @@ public class ShoppingCartController {
         return ResponseEntity.ok(updatedItems);
     }
 
-
-    // add a DELETE method to clear all products from the current users cart
-    // https://localhost:8080/cart  - return the (now empty) cart so the front end can refresh it (200 OK)
     @DeleteMapping()
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ShoppingCart> clearCart(Principal principal){
